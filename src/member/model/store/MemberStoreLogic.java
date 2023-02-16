@@ -48,7 +48,7 @@ public class MemberStoreLogic implements MemberStore{
 
 	@Override
 	public String generateNavi(SqlSession session, int currentPage) {
-		int recordTotalCount = 39;
+		int recordTotalCount = this.getTotalCount(session);
 		int recordCountPerPage = 10;
 		int naviTotalCount; //게시물 개수/10개씩 = '몇개 페이지가 필요하다'를 저장하는 변수
 		if(recordTotalCount % recordCountPerPage == 0) {
@@ -56,18 +56,30 @@ public class MemberStoreLogic implements MemberStore{
 		}else {
 			naviTotalCount = recordTotalCount/recordCountPerPage + 1;
 		}
-		int naviCountPerPage = 5; //페이지 몇개씩 보여줄거야
+		int naviCountPerPage = 5; //페이지 네비 몇개씩(1 2 3 4 5)//(6 7 8 9 10) 보여줄거야
 		int startNavi = ((currentPage - 1)/ naviCountPerPage)*naviCountPerPage +1;
 		int endNavi = startNavi + naviCountPerPage - 1;
 		if(endNavi > naviTotalCount) {
 			endNavi =naviTotalCount;
 		}
 		StringBuilder sb = new StringBuilder();
+		if(currentPage != 1) {
+			sb.append("<a href='/member/list.do?page="+(currentPage-1)+"'>[이전]</a>");
+		}
 		for(int i = startNavi; i<=endNavi; i++) {
 			sb.append("<a href='/member/list.do?page="+i+"'>"+ i +" </a>");
 		}
+		if(currentPage != naviTotalCount) {
+			sb.append("<a href='/member/list.do?page="+(currentPage+1)+"'>[다음]</a>");
+		}
 		return sb.toString();
 		
+	}
+
+	@Override
+	public int getTotalCount(SqlSession session) {
+		int totalCount = session.selectOne("MemberMapper.getTotalCount");
+		return totalCount;
 	}
 
 

@@ -57,9 +57,16 @@ public interface MemberStore {
 	 * 페이지 네비게이터 생성 store
 	 * @param session
 	 * @param currentPage
-	 * @return
+	 * @return String
 	 */
 	public String generateNavi(SqlSession session, int currentPage);
 	//session은 전체값, currentPage는 start, end값 가벼오는데 필요
+	
+	/**
+	 * 전체회원의 수 store
+	 * @param session
+	 * @return int
+	 */
+	public int getTotalCount(SqlSession session);
 	
 }
